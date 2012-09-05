@@ -1,0 +1,175 @@
+cmake_minimum_required(VERSION 2.8)
+
+project(cocos2dx)
+
+find_package(ZLIB REQUIRED)
+find_package(LibXml2 REQUIRED)
+
+include_directories(
+	${ZLIB_INCLUDES}
+	${LIBXML2_INCLUDE_DIR})
+
+if(ANDROID)
+	add_definitions(-DANDROID)
+	include_directories(${PROJECT_SOURCE_DIR}/platform/android)
+	set(COCOS2DX_PLATFORM_SOURCES
+		${PROJECT_SOURCE_DIR}/platform/android/CCEGLView.cpp
+		${PROJECT_SOURCE_DIR}/platform/android/CCAccelerometer.cpp
+		${PROJECT_SOURCE_DIR}/platform/android/CCApplication.cpp
+		${PROJECT_SOURCE_DIR}/platform/android/CCCommon.cpp
+		${PROJECT_SOURCE_DIR}/platform/android/CCFileUtils.cpp
+		${PROJECT_SOURCE_DIR}/platform/android/CCImage.cpp
+		${PROJECT_SOURCE_DIR}/platform/android/jni/EditBoxJni.cpp
+		${PROJECT_SOURCE_DIR}/platform/android/jni/JniHelper.cpp
+		${PROJECT_SOURCE_DIR}/platform/android/jni/IMEJni.cpp
+		${PROJECT_SOURCE_DIR}/platform/android/jni/MessageJni.cpp
+		${PROJECT_SOURCE_DIR}/platform/android/jni/SensorJni.cpp
+		${PROJECT_SOURCE_DIR}/platform/android/jni/SystemInfoJni.cpp
+		${PROJECT_SOURCE_DIR}/platform/android/jni/TouchesJni.cpp
+	)
+elseif(APPLE)
+elseif(UNIX)
+	add_definitions(-DLINUX)
+	find_package(Freetype REQUIRED)
+	include_directories(${FREETYPE_INCLUDE_DIRS})
+	set(COCOS2DX_PLATFORM_LIBRARIES ${FREETYPE_LIBRARIES})
+	include_directories(${PROJECT_SOURCE_DIR}/platform/linux)
+	set(COCOS2DX_PLATFORM_SOURCES
+		${PROJECT_SOURCE_DIR}/platform/linux/CCApplication.cpp
+		${PROJECT_SOURCE_DIR}/platform/linux/CCCommon.cpp
+		${PROJECT_SOURCE_DIR}/platform/linux/CCEGLView.cpp
+		${PROJECT_SOURCE_DIR}/platform/linux/CCFileUtils.cpp
+		${PROJECT_SOURCE_DIR}/platform/linux/CCImage.cpp
+		${PROJECT_SOURCE_DIR}/platform/linux/CCStdC.cpp
+	)
+elseif(WIN32)
+	add_definitions(-DWIN32)
+endif()
+
+include_directories(
+	${PROJECT_SOURCE_DIR}
+	${PROJECT_SOURCE_DIR}/include
+	${PROJECT_SOURCE_DIR}/kazmath/include
+)
+
+set(COCOS2DX_SOURCES
+	${COCOS2DX_PLATFORM_SOURCES}
+	${PROJECT_SOURCE_DIR}/CCConfiguration.cpp
+	${PROJECT_SOURCE_DIR}/CCDrawingPrimitives.cpp
+	${PROJECT_SOURCE_DIR}/CCScheduler.cpp
+	${PROJECT_SOURCE_DIR}/CCCamera.cpp
+	${PROJECT_SOURCE_DIR}/actions/CCAction.cpp
+	${PROJECT_SOURCE_DIR}/actions/CCActionCamera.cpp
+	${PROJECT_SOURCE_DIR}/actions/CCActionCatmullRom.cpp
+	${PROJECT_SOURCE_DIR}/actions/CCActionEase.cpp
+	${PROJECT_SOURCE_DIR}/actions/CCActionGrid.cpp
+	${PROJECT_SOURCE_DIR}/actions/CCActionGrid3D.cpp
+	${PROJECT_SOURCE_DIR}/actions/CCActionInstant.cpp
+	${PROJECT_SOURCE_DIR}/actions/CCActionInterval.cpp
+	${PROJECT_SOURCE_DIR}/actions/CCActionManager.cpp
+	${PROJECT_SOURCE_DIR}/actions/CCActionPageTurn3D.cpp
+	${PROJECT_SOURCE_DIR}/actions/CCActionProgressTimer.cpp
+	${PROJECT_SOURCE_DIR}/actions/CCActionTiledGrid.cpp
+	${PROJECT_SOURCE_DIR}/actions/CCActionTween.cpp
+	${PROJECT_SOURCE_DIR}/base_nodes/CCAtlasNode.cpp
+	${PROJECT_SOURCE_DIR}/base_nodes/CCNode.cpp
+	${PROJECT_SOURCE_DIR}/cocoa/CCAffineTransform.cpp
+	${PROJECT_SOURCE_DIR}/cocoa/CCGeometry.cpp
+	${PROJECT_SOURCE_DIR}/cocoa/CCAutoreleasePool.cpp
+	${PROJECT_SOURCE_DIR}/cocoa/CCDictionary.cpp
+	${PROJECT_SOURCE_DIR}/cocoa/CCNS.cpp
+	${PROJECT_SOURCE_DIR}/cocoa/CCObject.cpp
+	${PROJECT_SOURCE_DIR}/cocoa/CCSet.cpp
+	${PROJECT_SOURCE_DIR}/cocoa/CCString.cpp
+	${PROJECT_SOURCE_DIR}/cocoa/CCZone.cpp
+	${PROJECT_SOURCE_DIR}/cocoa/CCArray.cpp
+	${PROJECT_SOURCE_DIR}/cocos2d.cpp
+	${PROJECT_SOURCE_DIR}/CCDirector.cpp
+	${PROJECT_SOURCE_DIR}/effects/CCGrabber.cpp
+	${PROJECT_SOURCE_DIR}/effects/CCGrid.cpp
+	${PROJECT_SOURCE_DIR}/kazmath/src/aabb.c
+	${PROJECT_SOURCE_DIR}/kazmath/src/mat3.c
+	${PROJECT_SOURCE_DIR}/kazmath/src/mat4.c
+	${PROJECT_SOURCE_DIR}/kazmath/src/neon_matrix_impl.c
+	${PROJECT_SOURCE_DIR}/kazmath/src/plane.c
+	${PROJECT_SOURCE_DIR}/kazmath/src/quaternion.c
+	${PROJECT_SOURCE_DIR}/kazmath/src/ray2.c
+	${PROJECT_SOURCE_DIR}/kazmath/src/utility.c
+	${PROJECT_SOURCE_DIR}/kazmath/src/vec2.c
+	${PROJECT_SOURCE_DIR}/kazmath/src/vec3.c
+	${PROJECT_SOURCE_DIR}/kazmath/src/vec4.c
+	${PROJECT_SOURCE_DIR}/kazmath/src/GL/mat4stack.c
+	${PROJECT_SOURCE_DIR}/kazmath/src/GL/matrix.c
+	${PROJECT_SOURCE_DIR}/keypad_dispatcher/CCKeypadDelegate.cpp
+	${PROJECT_SOURCE_DIR}/keypad_dispatcher/CCKeypadDispatcher.cpp
+	${PROJECT_SOURCE_DIR}/label_nodes/CCLabelAtlas.cpp
+	${PROJECT_SOURCE_DIR}/label_nodes/CCLabelBMFont.cpp
+	${PROJECT_SOURCE_DIR}/label_nodes/CCLabelTTF.cpp
+	${PROJECT_SOURCE_DIR}/layers_scenes_transitions_nodes/CCLayer.cpp
+	${PROJECT_SOURCE_DIR}/layers_scenes_transitions_nodes/CCScene.cpp
+	${PROJECT_SOURCE_DIR}/layers_scenes_transitions_nodes/CCTransitionPageTurn.cpp
+	${PROJECT_SOURCE_DIR}/layers_scenes_transitions_nodes/CCTransition.cpp
+	${PROJECT_SOURCE_DIR}/layers_scenes_transitions_nodes/CCTransitionProgress.cpp
+	${PROJECT_SOURCE_DIR}/menu_nodes/CCMenu.cpp
+	${PROJECT_SOURCE_DIR}/menu_nodes/CCMenuItem.cpp
+	${PROJECT_SOURCE_DIR}/misc_nodes/CCMotionStreak.cpp
+	${PROJECT_SOURCE_DIR}/misc_nodes/CCProgressTimer.cpp
+	${PROJECT_SOURCE_DIR}/misc_nodes/CCRenderTexture.cpp
+	${PROJECT_SOURCE_DIR}/particle_nodes/CCParticleExamples.cpp
+	${PROJECT_SOURCE_DIR}/particle_nodes/CCParticleSystem.cpp
+	${PROJECT_SOURCE_DIR}/particle_nodes/CCParticleBatchNode.cpp
+	${PROJECT_SOURCE_DIR}/particle_nodes/CCParticleSystemQuad.cpp
+	${PROJECT_SOURCE_DIR}/platform/CCSAXParser.cpp
+	${PROJECT_SOURCE_DIR}/platform/CCThread.cpp
+	${PROJECT_SOURCE_DIR}/platform/platform.cpp
+	${PROJECT_SOURCE_DIR}/platform/CCEGLViewProtocol.cpp
+	${PROJECT_SOURCE_DIR}/script_support/CCScriptSupport.cpp
+	${PROJECT_SOURCE_DIR}/shaders/ccShaders.cpp
+	${PROJECT_SOURCE_DIR}/shaders/CCGLProgram.cpp
+	${PROJECT_SOURCE_DIR}/shaders/ccGLStateCache.cpp
+	${PROJECT_SOURCE_DIR}/shaders/CCShaderCache.cpp
+	${PROJECT_SOURCE_DIR}/sprite_nodes/CCAnimation.cpp
+	${PROJECT_SOURCE_DIR}/sprite_nodes/CCAnimationCache.cpp
+	${PROJECT_SOURCE_DIR}/sprite_nodes/CCSprite.cpp
+	${PROJECT_SOURCE_DIR}/sprite_nodes/CCSpriteBatchNode.cpp
+	${PROJECT_SOURCE_DIR}/sprite_nodes/CCSpriteFrame.cpp
+	${PROJECT_SOURCE_DIR}/sprite_nodes/CCSpriteFrameCache.cpp
+	${PROJECT_SOURCE_DIR}/support/CCNotificationCenter.cpp
+	${PROJECT_SOURCE_DIR}/support/CCProfiling.cpp
+	${PROJECT_SOURCE_DIR}/support/CCPointExtension.cpp
+	${PROJECT_SOURCE_DIR}/support/TransformUtils.cpp
+	${PROJECT_SOURCE_DIR}/support/CCUserDefault.cpp
+	${PROJECT_SOURCE_DIR}/support/base64.cpp
+	${PROJECT_SOURCE_DIR}/support/ccUtils.cpp
+	${PROJECT_SOURCE_DIR}/support/CCVertex.cpp
+	${PROJECT_SOURCE_DIR}/support/data_support/ccCArray.cpp
+	${PROJECT_SOURCE_DIR}/support/image_support/TGAlib.cpp
+	${PROJECT_SOURCE_DIR}/support/zip_support/ZipUtils.cpp
+	${PROJECT_SOURCE_DIR}/support/zip_support/ioapi.cpp
+	${PROJECT_SOURCE_DIR}/support/zip_support/unzip.cpp
+	${PROJECT_SOURCE_DIR}/text_input_node/CCIMEDispatcher.cpp
+	${PROJECT_SOURCE_DIR}/text_input_node/CCTextFieldTTF.cpp
+	${PROJECT_SOURCE_DIR}/textures/CCTexture2D.cpp
+	${PROJECT_SOURCE_DIR}/textures/CCTextureAtlas.cpp
+	${PROJECT_SOURCE_DIR}/textures/CCTextureCache.cpp
+	${PROJECT_SOURCE_DIR}/textures/CCTexturePVR.cpp
+	${PROJECT_SOURCE_DIR}/tilemap_parallax_nodes/CCParallaxNode.cpp
+	${PROJECT_SOURCE_DIR}/tilemap_parallax_nodes/CCTMXLayer.cpp
+	${PROJECT_SOURCE_DIR}/tilemap_parallax_nodes/CCTMXObjectGroup.cpp
+	${PROJECT_SOURCE_DIR}/tilemap_parallax_nodes/CCTMXTiledMap.cpp
+	${PROJECT_SOURCE_DIR}/tilemap_parallax_nodes/CCTMXXMLParser.cpp
+	${PROJECT_SOURCE_DIR}/tilemap_parallax_nodes/CCTileMapAtlas.cpp
+	${PROJECT_SOURCE_DIR}/touch_dispatcher/CCTouchDispatcher.cpp
+	${PROJECT_SOURCE_DIR}/touch_dispatcher/CCTouchHandler.cpp
+	${PROJECT_SOURCE_DIR}/touch_dispatcher/CCTouch.cpp
+)
+
+add_library(cocos2dx ${COCOS2DX_SOURCES})
+
+target_link_libraries(cocos2dx
+	GLESv2
+	EGL
+	log
+	${ZLIB_LIBRARIES}
+	${LIBXML2_LIBRARIES}
+	${COCOS2DX_PLATFORM_LIBRARIES})
