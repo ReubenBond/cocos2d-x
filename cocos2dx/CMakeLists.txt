@@ -15,6 +15,7 @@ set(${PROJ}_LIBRARIES)
 find_package(EGL REQUIRED)
 find_package(ZLIB REQUIRED)
 find_package(LibXml2 REQUIRED)
+find_package(Threads REQUIRED)
 
 if(ANDROID)
 	#TODO: Move these into /platform/android/CMakeLists.txt
@@ -41,11 +42,25 @@ if(ANDROID)
 		${SRC}/platform/android/jni/SensorJni.cpp
 		${SRC}/platform/android/jni/SystemInfoJni.cpp
 		${SRC}/platform/android/jni/TouchesJni.cpp)
+
+	set(${PROJ}_LIBRARIES
+		${${PROJ}_LIBRARIES}
+		log)
 elseif(APPLE)
 elseif(UNIX)
 	#TODO: Move these into /platform/linux/CMakeLists.txt
-	add_definitions(-DLINUX)
+	add_definitions(-DLINUX
+		-D__CC_PLATFORM_FILEUTILS_CPP__
+		-D__CC_PLATFORM_IMAGE_CPP__)
+
 	find_package(Freetype REQUIRED)
+	find_package(GLFW REQUIRED)
+	find_package(CURL REQUIRED)
+	find_package(PNG REQUIRED)
+	find_package(JPEG REQUIRED)
+	find_package(TIFF REQUIRED)
+	find_package(OpenGL REQUIRED)
+	find_package(GLEW REQUIRED)
 
 	# Platform-specific includes.
 	set(${PROJ}_INCLUDE_DIRS
@@ -56,7 +71,14 @@ elseif(UNIX)
 	# Platform-specific libraries.
 	set(${PROJ}_LIBRARIES
 		${${PROJ}_LIBRARIES}
-		${FREETYPE_LIBRARIES})
+		${OPENGL_LIBRARIES}
+		${FREETYPE_LIBRARIES}
+		${GLFW_LIBRARIES}
+		${CURL_LIBRARIES}
+		${PNG_LIBRARIES}
+		${JPEG_LIBRARIES}
+		${TIFF_LIBRARIES}
+		${GLEW_LIBRARY})
 
 	# Platform-specific sources.
 	set(${PROJ}_SOURCES
@@ -195,9 +217,9 @@ set(${PROJ}_INCLUDE_DIRS
 
 set(${PROJ}_LIBRARIES
 	${${PROJ}_LIBRARIES}
+	${CMAKE_THREAD_LIBS_INIT}
 	GLESv2 #FIXME
 	${EGL_LIBRARIES}
-	log #FIXME
 	${ZLIB_LIBRARIES}
 	${LIBXML2_LIBRARIES}
 	${COCOS2DX_PLATFORM_LIBRARIES})
@@ -221,6 +243,11 @@ endforeach(item)
 foreach(item ${${PROJ}_LIBRARIES})
     message(STATUS ${PROJ} "_LIBRARIES: " ${item})
 endforeach(item)
+
+get_cmake_property(_variableNames VARIABLES)
+foreach (_variableName ${_variableNames})
+    message(STATUS "${_variableName}=${${_variableName}}")
+endforeach()
 
 # Create a module configuration file for this project.
 configure_file(${CMAKE_SOURCE_DIR}/CMake/Modules/FindModule.cmake.in
