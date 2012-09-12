@@ -1,3 +1,9 @@
+Note from forker Reuben Bond
+=============================
+The purpose of my contributions here are currently to migrate the project to the CMake build systems for as many projects as I can, with a particular focus on Linux & Android, then Windows, and IOS.
+
+All help is greatly appreciated.
+
 cocos2d-x 
 ==================
 
