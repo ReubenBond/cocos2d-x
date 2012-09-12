@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 2.8)
 
-# Set up the environment
+# Set up the environment.
 set(SRC ${CMAKE_CURRENT_SOURCE_DIR})
 set(PROJ "cocos2dx")
 
@@ -40,8 +40,7 @@ if(ANDROID)
 		${SRC}/platform/android/jni/MessageJni.cpp
 		${SRC}/platform/android/jni/SensorJni.cpp
 		${SRC}/platform/android/jni/SystemInfoJni.cpp
-		${SRC}/platform/android/jni/TouchesJni.cpp
-	)
+		${SRC}/platform/android/jni/TouchesJni.cpp)
 elseif(APPLE)
 elseif(UNIX)
 	#TODO: Move these into /platform/linux/CMakeLists.txt
@@ -53,6 +52,7 @@ elseif(UNIX)
 		${${PROJ}_INCLUDE_DIRS}
 		${SRC}/platform/linux
 		${FREETYPE_INCLUDE_DIRS})
+
 	# Platform-specific libraries.
 	set(${PROJ}_LIBRARIES
 		${${PROJ}_LIBRARIES}
@@ -66,8 +66,7 @@ elseif(UNIX)
 		${SRC}/platform/linux/CCEGLView.cpp
 		${SRC}/platform/linux/CCFileUtils.cpp
 		${SRC}/platform/linux/CCImage.cpp
-		${SRC}/platform/linux/CCStdC.cpp
-	)
+		${SRC}/platform/linux/CCStdC.cpp)
 elseif(WIN32)
 	add_definitions(-DWIN32)
 endif()
@@ -76,8 +75,7 @@ set(${PROJ}_INCLUDE_DIRS
 	${${PROJ}_INCLUDE_DIRS}
 	${SRC}
 	${SRC}/include
-	${SRC}/kazmath/include
-)
+	${SRC}/kazmath/include)
 
 set(${PROJ}_SOURCES
 	${${PROJ}_SOURCES}
@@ -188,8 +186,7 @@ set(${PROJ}_SOURCES
 	${SRC}/tilemap_parallax_nodes/CCTileMapAtlas.cpp
 	${SRC}/touch_dispatcher/CCTouchDispatcher.cpp
 	${SRC}/touch_dispatcher/CCTouchHandler.cpp
-	${SRC}/touch_dispatcher/CCTouch.cpp
-)
+	${SRC}/touch_dispatcher/CCTouch.cpp)
 
 set(${PROJ}_INCLUDE_DIRS
 	${${PROJ}_INCLUDE_DIRS}
@@ -198,17 +195,17 @@ set(${PROJ}_INCLUDE_DIRS
 
 set(${PROJ}_LIBRARIES
 	${${PROJ}_LIBRARIES}
-	GLESv2
+	GLESv2 #FIXME
 	${EGL_LIBRARIES}
-	log
+	log #FIXME
 	${ZLIB_LIBRARIES}
 	${LIBXML2_LIBRARIES}
 	${COCOS2DX_PLATFORM_LIBRARIES})
 
 # Create the actual target.
-include_directories(${PROJ}_INCLUDE_DIRS)
+include_directories(${${PROJ}_INCLUDE_DIRS})
 add_library(${PROJ} ${${PROJ}_SOURCES})
-target_link_libraries(${PROJ} ${PROJ}_LIBRARIES)
+target_link_libraries(${PROJ} ${${PROJ}_LIBRARIES})
 
 message(STATUS "PROJ: " ${PROJ})
 message(STATUS "SRC: " ${SRC})
