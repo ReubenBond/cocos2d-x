@@ -1,0 +1,11 @@
+# - Try to find @PROJ@
+# Once done, this will define
+#
+#  @PROJ@_FOUND - system has @PROJ@
+#  @PROJ@_INCLUDE_DIRS - the @PROJ@ include directories
+#  @PROJ@_LIBRARIES - link these to use @PROJ@
+
+set(@PROJ@_FOUND TRUE)
+set(@PROJ@_INCLUDE_DIRS ${${PROJ}_INCLUDE_DIRS})
+set(@PROJ@_LIBRARIES ${${PROJ}_LIBRARIES} @PROJ@)
+message(STATUS "Found @PROJ")

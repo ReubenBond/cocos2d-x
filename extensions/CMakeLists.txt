@@ -1,8 +1,26 @@
 cmake_minimum_required(VERSION 2.8)
 
-project(extension)
+# Set up the environment
+set(SRC ${CMAKE_CURRENT_SOURCE_DIR})
+set(PROJ "extension")
 
-set(EXTENSION_SOURCES
+project(${PROJ})
+
+# Clear variables for our current project.
+set(${PROJ}_SOURCES)
+set(${PROJ}_INCLUDE_DIRS)
+set(${PROJ}_LIBRARIES)
+
+find_package(cocos2dx REQUIRED)
+
+# Include Cocos2d-x includes.
+set(${PROJ}_INCLUDE_DIRS
+	${${PROJ}_INCLUDE_DIRS}
+	${cocos2dx_INCLUDE_DIRS})
+link_directories(${PROJECT_BINARY_DIR}/cocos2dx)
+
+set(${PROJ}_SOURCES
+	${${PROJ}_SOURCES}
 	CCBReader/CCBFileLoader.cpp
 	CCBReader/CCBReader.cpp
 	CCBReader/CCControlButtonLoader.cpp
@@ -39,4 +57,31 @@ set(EXTENSION_SOURCES
 
 	network/HttpClient.cpp)
 
-add_library(extension ${EXTENSION_SOURCES})
+# Create the actual target.
+include_directories(${PROJ}_INCLUDE_DIRS)
+add_library(${PROJ} ${${PROJ}_SOURCES})
+target_link_libraries(${PROJ} ${PROJ}_LIBRARIES)
+
+message(STATUS "PROJ: " ${PROJ})
+message(STATUS "SRC: " ${SRC})
+
+foreach(item ${${PROJ}_SOURCES})
+    message(STATUS ${PROJ} "_SOURCES: " ${item})
+endforeach(item)
+
+foreach(item ${${PROJ}_INCLUDE_DIRS})
+    message(STATUS ${PROJ} "_INCLUDE_DIRS: " ${item})
+endforeach(item)
+
+foreach(item ${${PROJ}_LIBRARIES})
+    message(STATUS ${PROJ} "_LIBRARIES: " ${item})
+endforeach(item)
+
+get_cmake_property(_variableNames VARIABLES)
+foreach (_variableName ${_variableNames})
+    message(STATUS "${_variableName}=${${_variableName}}")
+endforeach()
+
+# Create a module configuration file for this project.
+configure_file(${CMAKE_SOURCE_DIR}/CMake/Modules/FindModule.cmake.in
+	${CMAKE_BINARY_DIR}/CMake/Modules/Find${PROJ}.cmake)
